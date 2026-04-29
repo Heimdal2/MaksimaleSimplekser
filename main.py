@@ -1,48 +1,35 @@
 import numpy as np
+import background as bck
 import matplotlib.pyplot as plt
-import scipy.spatial.distance as sp
-from itertools import combinations
 
+N = 10
+samples = 5
+dicts = []
+maximals = []
+clouds = []
 
-N = 5
-np.random.seed(69)
-P = np.random.uniform(0, 10, (N,2))
-M = sp.cdist(P,P,'euclidean')
+for sample in range(samples):
+    lower, upper = -10,10
+#    P = np.random.uniform(lower, upper, (N,2))
+    P = np.array([[np.cos(2*np.pi*k/N),np.sin(2*np.pi*k/N)] for k in range(N)])
+    D = bck.Program(P)
+    MaxSimp = {}
+    for key in D:
+        MaxSimp[key] = len(D[key])
 
+    maximals.append(MaxSimp)
+    clouds.append(P)
 
-def isSubset(A,B):
-    return np.all(np.isin(A,B))
+for i in range(samples):
+    M = np.array(list(maximals[i].items()))
+    P = clouds[i]
+    print(M)
 
-def diam(sigma,M,r=2):
-    return np.round(np.max(M[sigma][:,sigma]),r)
+    plt.plot(*M.T)
+    plt.scatter(*M.T)
+    plt.grid()
+    plt.show()
 
-def eliminer_delmengder(S):
-    S_ = sorted(S, key=len, reverse=True)
-    res = []
-    for A in S_:
-        if not np.any(np.array([isSubset(A,B) for B in res])):
-            res.append(A)
-
-    return res
-
-def P(S):
-    return [list(c) for r in range(2,len(S)+1) for c in combinations(S,r)]
-
-def Diametre(S, M):
-    diams = {}
-    for sigma in P(S):
-        diams[tuple(sigma)] = diam(sigma,M)
-
-    return diams
-
-Diams = Diametre(range(N), M)
-Filt = {}
-
-for value in Diams.values():
-    Simplekser = [list(k) for k, v in Diams.items() if v <= value]
-    Filt[value] = eliminer_delmengder(Simplekser)
-
-
-for key in Filt:
-    print(key, Filt[key])
-    print(" ")
+    plt.scatter(*P.T)
+    plt.grid()
+    plt.show()
