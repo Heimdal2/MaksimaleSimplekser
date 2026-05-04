@@ -59,7 +59,7 @@ def Diametre(S, M):
 def Program(P,M=None):
     N = len(P)
     if M == None:
-        M = sp.cdist(P,P,'euclidean')
+        M = sp.cdist(P,P,'cityblock')
     
     Diams = Diametre(range(N), M)
     Filt = {}
